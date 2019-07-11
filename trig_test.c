@@ -1,3 +1,4 @@
+/*	$OpenBSD$	*/
 /*-
  * Copyright (c) 2008 David Schultz <das@FreeBSD.org>
  * All rights reserved.
@@ -24,6 +25,8 @@
  * SUCH DAMAGE.
  */
 
+#include "macros.h"
+
 /*
  * Tests for corner cases in trigonometric functions. Some accuracy tests
  * are included as well, but these are very basic sanity checks, not
@@ -44,7 +47,7 @@ __FBSDID("$FreeBSD$");
 #include <math.h>
 #include <stdio.h>
 
-#include <atf-c.h>
+#include "atf-c.h"
 
 #include "test-utils.h"
 

@@ -1,3 +1,4 @@
+/*	$OpenBSD$	*/
 /*-
  * Copyright (c) 2008-2011 David Schultz <das@FreeBSD.org>
  * All rights reserved.
@@ -24,6 +25,8 @@
  * SUCH DAMAGE.
  */
 
+#include "macros.h"
+
 /*
  * Tests for csin[h](), ccos[h](), and ctan[h]().
  */
@@ -38,7 +41,7 @@ __FBSDID("$FreeBSD$");
 #include <math.h>
 #include <stdio.h>
 
-#include <atf-c.h>
+#include "atf-c.h"
 
 #include "test-utils.h"
 

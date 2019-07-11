@@ -1,3 +1,4 @@
+/*	$OpenBSD$	*/
 /*-
  * Copyright (c) 2007 David Schultz <das@FreeBSD.org>
  * All rights reserved.
@@ -23,6 +24,8 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+
+#include "macros.h"
 
 /*
  * Tests for csqrt{,f}()

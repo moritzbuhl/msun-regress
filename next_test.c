@@ -1,3 +1,4 @@
+/*	$OpenBSD$	*/
 /*-
  * Copyright (c) 2005 David Schultz <das@FreeBSD.org>
  * All rights reserved.
@@ -23,6 +24,8 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+
+#include "macros.h"
 
 /*
  * Test the correctness of nextafter{,f,l} and nexttoward{,f,l}.

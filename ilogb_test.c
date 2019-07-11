@@ -1,3 +1,4 @@
+/*	$OpenBSD$	*/
 /*-
  * Copyright (c) 2004 Stefan Farfeleder
  * All rights reserved.
