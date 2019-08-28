@@ -43,6 +43,7 @@ __FBSDID("$FreeBSD$");
 #include <stdlib.h>
 
 #include "test-utils.h"
+#include "helpers.h"
 
 #pragma STDC FENV_ACCESS ON
 
@@ -58,7 +59,14 @@ __FBSDID("$FreeBSD$");
  */
 #define	test(func, x, y, z, result, exceptmask, excepts) do {		\
 	volatile long double _vx = (x), _vy = (y), _vz = (z);		\
+	if (verbose)							\
+	    printf("Test " #func "(%Lf, %Lf, %Lf)\n", _vx, _vy, _vz);	\
 	assert(feclearexcept(FE_ALL_EXCEPT) == 0);			\
+	if (verbose) {							\
+	    check_fpequal((func)(_vx, _vy, _vz), (result));		\
+	    check_feexcept(fetestexcept(exceptmask), (excepts));	\
+	    break;							\
+	}								\
 	assert(fpequal((func)(_vx, _vy, _vz), (result)));		\
 	assert(((void)(func), fetestexcept(exceptmask) == (excepts)));	\
 } while (0)
