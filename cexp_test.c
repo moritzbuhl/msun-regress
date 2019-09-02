@@ -44,6 +44,7 @@ __FBSDID("$FreeBSD$");
 #include <stdio.h>
 
 #include "test-utils.h"
+#include "helpers.h"
 
 #pragma STDC FENV_ACCESS	ON
 #pragma	STDC CX_LIMITED_RANGE	OFF
@@ -62,6 +63,26 @@ __FBSDID("$FreeBSD$");
  * XXX The volatile here is to avoid gcc's bogus constant folding and work
  *     around the lack of support for the FENV_ACCESS pragma.
  */
+
+#ifdef VERBOSE
+#define	test(func, z, result, exceptmask, excepts, checksign)	do {	\
+	volatile long double complex _d = z;				\
+	printf("Test " #func "(%.32f +i%.32f)\n", creal(_d),		\
+	    cimag(_d));							\
+	assert(feclearexcept(FE_ALL_EXCEPT) == 0);			\
+	check_cfpequal_cs((func)(_d), (result), (checksign));		\
+	check_feexcept(fetestexcept(exceptmask), (excepts));		\
+} while (0)
+
+/* Test within a given tolerance. */
+#define	test_tol(func, z, result, tol)				do {	\
+	volatile long double complex _d = z;				\
+	printf("Test tol " #func "(%.32f +i%.32f)\n", creal(_d),	\
+	    cimag(_d));							\
+	check_cfpequal_tol((func)(_d), (result), (tol),			\
+	    FPE_ABS_ZERO | CS_BOTH);					\
+} while (0)
+#else /* VERBOSE */
 #define	test(func, z, result, exceptmask, excepts, checksign)	do {	\
 	volatile long double complex _d = z;				\
 	assert(feclearexcept(FE_ALL_EXCEPT) == 0);			\
@@ -75,6 +96,7 @@ __FBSDID("$FreeBSD$");
 	assert(cfpequal_tol((func)(_d), (result), (tol),		\
 	    FPE_ABS_ZERO | CS_BOTH));					\
 } while (0)
+#endif /* VERBOSE */
 
 /* Test all the functions that compute cexp(x). */
 #define	testall(x, result, exceptmask, excepts, checksign)	do {	\
