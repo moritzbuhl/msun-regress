@@ -27,10 +27,6 @@
 
 #include "macros.h"
 
-/*
- * Tests for csqrt{,f,l}()
- */
-
 #include <sys/cdefs.h>
 __FBSDID("$FreeBSD$");
 
@@ -135,7 +131,6 @@ ATF_TC_HEAD(zeros, tc)
 }
 ATF_TC_BODY(zeros, tc)
 {
-
 	testall(csqrt, CMPLXL(0.0, 0.0), CMPLXL(0.0, 0.0), 1);
 	testall(csqrt, CMPLXL(-0.0, 0.0), CMPLXL(0.0, 0.0), 1);
 	testall(csqrt, CMPLXL(0.0, -0.0), CMPLXL(0.0, -0.0), 1);
@@ -262,13 +257,11 @@ ATF_TC_BODY(precision, tc)
 {
 	test_precision(DBL_MAX_EXP, DBL_MANT_DIG);
 	test_precision(FLT_MAX_EXP, FLT_MANT_DIG);
-	test_precision(LDBL_MAX_EXP,
 #ifndef __i386__
-	    LDBL_MANT_DIG
+	test_precision(LDBL_MAX_EXP, LDBL_MANT_DIG);
 #else
-	    DBL_MANT_DIG
+	test_precision(LDBL_MAX_EXP, DBL_MANT_DIG);
 #endif
-	    );
 }
 
 void
@@ -316,4 +309,6 @@ ATF_TP_ADD_TCS(tp)
 	ATF_TP_ADD_TC(tp, nans);
 	ATF_TP_ADD_TC(tp, overflow);
 	ATF_TP_ADD_TC(tp, precision);
+
+	return (atf_no_error());
 }
