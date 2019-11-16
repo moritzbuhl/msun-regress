@@ -23,7 +23,7 @@ void atf_body_##fn(void);
 
 #define ATF_CHECK(exp)	do {						\
 	if (!(exp))							\
-		printf("\nFAILED\n"__FILE__":__LINE__: " #exp);		\
+		printf(__FILE__":%d: %s\nFAILED\n", __LINE__, #exp);	\
 	} while (0)
 
 #define atf_tc_expect_fail(fmt, ...)					\

@@ -48,10 +48,10 @@ __FBSDID("$FreeBSD$");
 #pragma	STDC CX_LIMITED_RANGE	OFF
 
 #define test(func, z, result, checksign)			do {	\
-        volatile long double complex _d = z;				\
-        debug("  testing %s(%Lg + %Lg I) ~= %Lg + %Lg I\n", #func,	\
-            creall(_d), cimagl(_d), creall(result), cimagl(result));	\
-        ATF_CHECK(cfpequal_cs((func)(_d), (result), (checksign)));	\
+	volatile long double complex _d = z;				\
+	debug("  testing %s(%Lg + %Lg I) ~= %Lg + %Lg I\n", #func,	\
+	    creall(_d), cimagl(_d), creall(result), cimagl(result));	\
+	ATF_CHECK(cfpequal_cs((func)(_d), (result), (checksign)));	\
 } while (0)
 
 #define testall(func, z, result, checksign)			do {	\
@@ -60,18 +60,22 @@ __FBSDID("$FreeBSD$");
 	test(func##l, z, result, checksign);				\
 } while (0)
 
-/*
- * Test csqrt for some finite arguments where the answer is exact.
- * (We do not test if it produces correctly rounded answers when the
- * result is inexact, nor do we check whether it throws spurious
- * exceptions.)
- */
-static void
-test_finite(void)
+void test_overflow(int);
+void test_precision(int, int);
+
+ATF_TC(finite);
+ATF_TC_HEAD(finite, tc)
+{
+	atf_tc_set_md_var(tc, "descr", "Test csqrt for some finite arguments "
+	    "where the answer is exact. (We do not test if it produces "
+	    "correctly rounded answers when the result is inexact, nor do we "
+	    "check whether it throws spurious exceptions.)");
+}
+ATF_TC_BODY(finite, tc)
 {
 	static const double tests[] = {
-	     /* csqrt(a + bI) = x + yI */
-	     /* a	b	x	y */
+	    /* csqrt(a + bI) = x + yI */
+	    /* a	b	x	y */
 		0,	8,	2,	2,
 		0,	-8,	2,	-2,
 		4,	0,	2,	0,
@@ -124,11 +128,12 @@ test_finite(void)
 
 }
 
-/*
- * Test the handling of +/- 0.
- */
-static void
-test_zeros(void)
+ATF_TC(zeros);
+ATF_TC_HEAD(zeros, tc)
+{
+	atf_tc_set_md_var(tc, "descr", "Test the handling of +/- 0.")
+}
+ATF_TC_BODY(zeros, tc)
 {
 
 	testall(csqrt, CMPLXL(0.0, 0.0), CMPLXL(0.0, 0.0), 1);
@@ -137,11 +142,13 @@ test_zeros(void)
 	testall(csqrt, CMPLXL(-0.0, -0.0), CMPLXL(0.0, -0.0), 1);
 }
 
-/*
- * Test the handling of infinities when the other argument is not NaN.
- */
-static void
-test_infinities(void)
+ATF_TC(infinities);
+ATF_TC_HEAD(infinities, tc)
+{
+	atf_tc_set_md_var(tc, "descr", "Test the handling of infinities "
+	    "when the other argument is not NaN.");
+}
+ATF_TC_BODY(infinities, tc)
 {
 	static const double vals[] = {
 		0.0,
@@ -168,11 +175,12 @@ test_infinities(void)
 	}
 }
 
-/*
- * Test the handling of NaNs.
- */
-static void
-test_nans(void)
+ATF_TC(nans);
+ATF_TC_HEAD(nans, tc)
+{
+	atf_tc_set_md_var(tc, "descr", "Test the handling of NaNs.");
+}
+ATF_TC_BODY(nans, tc)
 {
 	testall(csqrt, CMPLXL(INFINITY, NAN), CMPLXL(INFINITY, NAN), 1);
 
@@ -192,12 +200,22 @@ test_nans(void)
 	testall(csqrt, CMPLXL(NAN, NAN), CMPLXL(NAN, NAN), 1);
 }
 
-/*
- * Test whether csqrt(a + bi) works for inputs that are large enough to
- * cause overflow in hypot(a, b) + a.  Each of the tests is scaled up to
- * near MAX_EXP.
- */
-static void
+ATF_TC(overflow);
+ATF_TC_HEAD(overflow, tc)
+{
+	atf_tc_set_md_var(tc, "descr", "Test whether csqrt(a + bi) works "
+	    "for inputs that are large enough to cause overflow in "
+	    "hypot(a, b) + a.  Each of the tests is scaled up to "
+	    "near MAX_EXP.");
+}
+ATF_TC_BODY(overflow, tc)
+{
+	test_overflow(DBL_MAX_EXP);
+	test_overflow(FLT_MAX_EXP);
+	test_overflow(LDBL_MAX_EXP);
+}
+
+void
 test_overflow(int maxexp)
 {
 	long double a, b, x, y;
@@ -232,13 +250,28 @@ test_overflow(int maxexp)
 	}
 }
 
-/*
- * Test that precision is maintained for some large squares.  Set all or
- * some bits in the lower mantdig/2 bits, square the number, and try to
- * recover the sqrt.  Note:
- * 	(x + xI)**2 = 2xxI
- */
-static void
+ATF_TC(precision);
+ATF_TC_HEAD(precision, tc)
+{
+	atf_tc_set_md_var(tc, "descr", "Test that precision is maintained "
+	    "for some large squares.  Set all or some bits in the lower "
+	    "mantdig/2 bits, square the number, and try to recover the "
+	    "sqrt. Note: (x + xI)**2 = 2xxI");
+}
+ATF_TC_BODY(precision, tc)
+{
+	test_precision(DBL_MAX_EXP, DBL_MANT_DIG);
+	test_precision(FLT_MAX_EXP, FLT_MANT_DIG);
+	test_precision(LDBL_MAX_EXP,
+#ifndef __i386__
+	    LDBL_MANT_DIG
+#else
+	    DBL_MANT_DIG
+#endif
+	    );
+}
+
+void
 test_precision(int maxexp, int mantdig)
 {
 	long double b, x;
@@ -253,8 +286,8 @@ test_precision(int maxexp, int mantdig)
 	for (exp = 0; exp <= maxexp; exp += 2) {
 		mantbits = ((uint64_t)1 << (mantdig / 2 )) - 1;
 		for (i = 0;
-		     i < 100 && mantbits > ((uint64_t)1 << (mantdig / 2 - 1));
-		     i++, mantbits--) {
+		    i < 100 && mantbits > ((uint64_t)1 << (mantdig / 2 - 1));
+		    i++, mantbits--) {
 			sq_mantbits = mantbits * mantbits;
 			/*
 			 * sq_mantibts is a mantdig-bit number.  Divide by
@@ -275,41 +308,12 @@ test_precision(int maxexp, int mantdig)
 	}
 }
 
-int
-main(void)
+ATF_TP_ADD_TCS(tp)
 {
-
-	printf("1..18\n");
-
-	/* Test csqrt() */
-
-	test_finite();
-	printf("ok 1 - finite\n");
-
-	test_zeros();
-	printf("ok 2 - zeros\n");
-
-	test_infinities();
-	printf("ok 3 - infinities\n");
-
-	test_nans();
-	printf("ok 4 - nans\n");
-
-	//test_overflow(DBL_MAX_EXP);
-	//test_overflow(FLT_MAX_EXP);
-	//test_overflow(LDBL_MAX_EXP);
-	printf("ok 5 - overflow\n");
-
-	//test_precision(DBL_MAX_EXP, DBL_MANT_DIG);
-	//test_precision(FLT_MAX_EXP, FLT_MANT_DIG);
-	printf("ok 6 - precision\n");
-	//test_precision(LDBL_MAX_EXP,
-#ifndef __i386__
-	    //LDBL_MANT_DIG
-#else
-	    //DBL_MANT_DIG
-#endif
-	    //);
-
-	return (0);
+	ATF_TP_ADD_TC(tp, finite);
+	ATF_TP_ADD_TC(tp, zeros);
+	ATF_TP_ADD_TC(tp, infinities);
+	ATF_TP_ADD_TC(tp, nans);
+	ATF_TP_ADD_TC(tp, overflow);
+	ATF_TP_ADD_TC(tp, precision);
 }
