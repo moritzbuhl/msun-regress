@@ -38,6 +38,8 @@
 #include <math.h>
 #include <stdio.h>
 
+#include "test-utils.h"
+
 /*
  * XXX The volatile here is to avoid gcc's bogus constant folding and work
  *     around the lack of support for the FENV_ACCESS pragma.
@@ -46,7 +48,8 @@
 	volatile double _d = x;						\
 	assert(feclearexcept(FE_ALL_EXCEPT) == 0);			\
 	assert((func)(_d) == (result) || fetestexcept(FE_INVALID));	\
-	assert(fetestexcept(FE_ALL_EXCEPT) == (excepts));		\
+	assert((fetestexcept(FE_ALL_EXCEPT) & ALL_STD_EXCEPT) 		\
+			== (excepts));					\
 } while (0)
 
 #define	testall(x, result, excepts)	do {				\
