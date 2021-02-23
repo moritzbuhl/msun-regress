@@ -9,6 +9,7 @@ TESTS +=	lrint_test
 PROGS=	${TESTS}
 LDADD=	-lm
 DPADD=	${LIBM}
+CFLAGS+=	-fno-builtin
 
 .for t in ${TESTS}
 REGRESS_TARGETS+=	run-$t
