@@ -38,6 +38,7 @@
 #include <err.h>
 #include <fenv.h>
 #include <float.h>
+#include <libutil.h>
 #include <math.h>
 #include <signal.h>
 #include <stdio.h>
@@ -178,7 +179,10 @@ ATF_TC_BODY(dfl_env, tc)
 	fenv_t env;
 
 	fegetenv(&env);
-
+	/* Print the default environment for debugging purposes. */
+	hexdump(&env, sizeof(env), "current fenv ", HD_OMIT_CHARS);
+	hexdump(FE_DFL_ENV, sizeof(env), "default fenv ", HD_OMIT_CHARS);
+	CHECK_FP_EXCEPTIONS(0, FE_ALL_EXCEPT);
 #ifdef __amd64__
 	/*
 	 * Compare the fields that the AMD [1] and Intel [2] specs say will be
@@ -207,7 +211,7 @@ ATF_TC_BODY(dfl_env, tc)
 #endif
 
 #endif
-	ATF_CHECK_EQ(0, fetestexcept(FE_ALL_EXCEPT));
+	CHECK_FP_EXCEPTIONS(0, FE_ALL_EXCEPT);
 }
 
 /*
