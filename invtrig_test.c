@@ -57,7 +57,7 @@ __FBSDID("$FreeBSD$");
 #define	test_tol(func, x, result, tol, excepts) do {			\
 	volatile long double _in = (x), _out = (result);		\
 	ATF_REQUIRE_EQ(0, feclearexcept(FE_ALL_EXCEPT));		\
-	ATF_CHECK(fpequal_tol(func(_in), _out, (tol), CS_BOTH));	\
+	CHECK_FPEQUAL_TOL(func(_in), _out, (tol), CS_BOTH);		\
 	CHECK_FP_EXCEPTIONS_MSG(excepts, ALL_STD_EXCEPT, "for %s(%s)",	\
 	    #func, #x);							\
 } while (0)
@@ -87,7 +87,7 @@ __FBSDID("$FreeBSD$");
 #define	test2_tol(func, y, x, result, tol, excepts) do {		\
 	volatile long double _iny = (y), _inx = (x), _out = (result);	\
 	ATF_REQUIRE_EQ(0, feclearexcept(FE_ALL_EXCEPT));		\
-	ATF_CHECK(fpequal_tol(func(_iny, _inx), _out, (tol), CS_BOTH));	\
+	CHECK_FPEQUAL_TOL(func(_iny, _inx), _out, (tol), CS_BOTH);	\
 	CHECK_FP_EXCEPTIONS_MSG(excepts, ALL_STD_EXCEPT, "for %s(%s)",	\
 	    #func, #x);							\
 } while (0)

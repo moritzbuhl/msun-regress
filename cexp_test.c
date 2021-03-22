@@ -71,7 +71,7 @@ do {									\
 	printf("Test " #func "(%.32f +i%.32f)\n", creal(_d),		\
 	    cimag(_d));							\
 	ATF_REQUIRE_EQ(0, feclearexcept(FE_ALL_EXCEPT));		\
-	ATF_CHECK(cfpequal_cs((func)(_d), (_r), (checksign)));		\
+	CHECK_CFPEQUAL_CS((func)(_d), (_r), (checksign));		\
 	CHECK_FP_EXCEPTIONS_MSG(excepts, exceptmask, "for %s(%s)",	\
 	    #func, #z);							\
 } while (0)
@@ -96,10 +96,9 @@ do {									\
 } while (0)
 
 /* Test within a given tolerance. */
-#define	test_tol(func, z, result, tol)				do {	\
-	volatile long double complex _d = z;				\
-	ATF_CHECK(cfpequal_tol((func)(_d), (result), (tol),		\
-	    FPE_ABS_ZERO | CS_BOTH));					\
+#define	test_tol(func, z, result, tol)	do {			\
+	CHECK_CFPEQUAL_TOL((func)(z), (result), (tol),		\
+	    FPE_ABS_ZERO | CS_BOTH);				\
 } while (0)
 #endif /* VERBOSE */
 

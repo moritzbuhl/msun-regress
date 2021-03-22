@@ -66,7 +66,7 @@ __FBSDID("$FreeBSD$");
 	    check_feexcept(fetestexcept(exceptmask), (excepts));	\
 	    break;							\
 	}								\
-	ATF_CHECK(fpequal((func)(_vx, _vy, _vz), (result)));		\
+	CHECK_FPEQUAL((func)(_vx, _vy, _vz), (result));		\
 	CHECK_FP_EXCEPTIONS_MSG(excepts, exceptmask, "for %s(%s)",	\
 	    #func, #x);							\
 } while (0)
