@@ -36,7 +36,6 @@ __FBSDID("$FreeBSD$");
 
 #include <sys/param.h>
 
-#include <assert.h>
 #include <complex.h>
 #include <fenv.h>
 #include <float.h>
@@ -67,12 +66,14 @@ __FBSDID("$FreeBSD$");
 #ifdef VERBOSE
 #define	test_t(type, func, z, result, exceptmask, excepts, checksign)	\
 do {									\
+ 	volatile long double complex _d = z;				\
 	volatile type complex _r = result;				\
 	printf("Test " #func "(%.32f +i%.32f)\n", creal(_d),		\
 	    cimag(_d));							\
-	assert(feclearexcept(FE_ALL_EXCEPT) == 0);			\
-	check_cfpequal_cs((func)(_d), (_r), (checksign));		\
-	check_feexcept(fetestexcept(exceptmask), (excepts));		\
+	ATF_REQUIRE_EQ(0, feclearexcept(FE_ALL_EXCEPT));		\
+	ATF_CHECK(cfpequal_cs((func)(_d), (_r), (checksign)));		\
+	CHECK_FP_EXCEPTIONS_MSG(excepts, exceptmask, "for %s(%s)",	\
+	    #func, #z);							\
 } while (0)
 
 /* Test within a given tolerance. */
@@ -80,23 +81,24 @@ do {									\
 	volatile long double complex _d = z;				\
 	printf("Test tol " #func "(%.32f +i%.32f)\n", creal(_d),	\
 	    cimag(_d));							\
-	check_cfpequal_tol((func)(_d), (result), (tol),			\
-	    FPE_ABS_ZERO | CS_BOTH);					\
+	ATF_CHECK(cfpequal_tol((func)(_d), (result), (tol),		\
+	    FPE_ABS_ZERO | CS_BOTH));					\
 } while (0)
 #else /* VERBOSE */
 #define	test_t(type, func, z, result, exceptmask, excepts, checksign)	\
 do {									\
 	volatile type complex _r = result;				\
 	volatile long double complex _d = z;				\
-	assert(feclearexcept(FE_ALL_EXCEPT) == 0);			\
-	assert(cfpequal_cs((func)(_d), (_r), (checksign)));		\
-	assert(((void)(func), fetestexcept(exceptmask) == (excepts)));	\
+	ATF_REQUIRE_EQ(0, feclearexcept(FE_ALL_EXCEPT));		\
+	ATF_CHECK(cfpequal_cs((func)(_d), (_r), (checksign)));		\
+	CHECK_FP_EXCEPTIONS_MSG(excepts, exceptmask, "for %s(%s)",	\
+	    #func, #z);							\
 } while (0)
 
 /* Test within a given tolerance. */
 #define	test_tol(func, z, result, tol)				do {	\
 	volatile long double complex _d = z;				\
-	assert(cfpequal_tol((func)(_d), (result), (tol),		\
+	ATF_CHECK(cfpequal_tol((func)(_d), (result), (tol),		\
 	    FPE_ABS_ZERO | CS_BOTH));					\
 } while (0)
 #endif /* VERBOSE */
@@ -133,8 +135,8 @@ static const float finites[] =
 
 
 /* Tests for 0 */
-static void
-test_zero(void)
+ATF_TC_WITHOUT_HEAD(zero);
+ATF_TC_BODY(zero, tc)
 {
 
 	/* cexp(0) = 1, no exceptions raised */
@@ -148,15 +150,14 @@ test_zero(void)
  * Tests for NaN.  The signs of the results are indeterminate unless the
  * imaginary part is 0.
  */
-static void
-test_nan(void)
+ATF_TC_WITHOUT_HEAD(nan);
+ATF_TC_BODY(nan, tc)
 {
 	unsigned i;
 
 	/* cexp(x + NaNi) = NaN + NaNi and optionally raises invalid */
 	/* cexp(NaN + yi) = NaN + NaNi and optionally raises invalid (|y|>0) */
 	for (i = 0; i < nitems(finites); i++) {
-		printf("# Run %d..\n", i);
 		testall(CMPLXL(finites[i], NAN), CMPLXL(NAN, NAN),
 			ALL_STD_EXCEPT & ~FE_INVALID, 0, 0);
 		if (finites[i] == 0.0)
@@ -181,14 +182,13 @@ test_nan(void)
 		ALL_STD_EXCEPT, 0, 0);
 }
 
-static void
-test_inf(void)
+ATF_TC_WITHOUT_HEAD(inf);
+ATF_TC_BODY(inf, tc)
 {
 	unsigned i;
 
 	/* cexp(x + inf i) = NaN + NaNi and raises invalid */
 	for (i = 0; i < nitems(finites); i++) {
-		printf("# Run %d..\n", i);
 		testall(CMPLXL(finites[i], INFINITY), CMPLXL(NAN, NAN),
 			ALL_STD_EXCEPT, FE_INVALID, 1);
 	}
@@ -223,14 +223,13 @@ test_inf(void)
 		ALL_STD_EXCEPT, 0, 1);
 }
 
-static void
-test_reals(void)
+ATF_TC_WITHOUT_HEAD(reals);
+ATF_TC_BODY(reals, tc)
 {
 	unsigned i;
 
 	for (i = 0; i < nitems(finites); i++) {
 		/* XXX could check exceptions more meticulously */
-		printf("# Run %d..\n", i);
 		test(cexp, CMPLXL(finites[i], 0.0),
 		     CMPLXL(exp(finites[i]), 0.0),
 		     FE_INVALID | FE_DIVBYZERO, 0, 1);
@@ -246,13 +245,12 @@ test_reals(void)
 	}
 }
 
-static void
-test_imaginaries(void)
+ATF_TC_WITHOUT_HEAD(imaginaries);
+ATF_TC_BODY(imaginaries, tc)
 {
 	unsigned i;
 
 	for (i = 0; i < nitems(finites); i++) {
-		printf("# Run %d..\n", i);
 		test(cexp, CMPLXL(0.0, finites[i]),
 		     CMPLXL(cos(finites[i]), sin(finites[i])),
 		     ALL_STD_EXCEPT & ~FE_INEXACT, 0, 1);
@@ -268,8 +266,8 @@ test_imaginaries(void)
 	}
 }
 
-static void
-test_small(void)
+ATF_TC_WITHOUT_HEAD(small);
+ATF_TC_BODY(small, tc)
 {
 	static const double tests[] = {
 	     /* csqrt(a + bI) = x + yI */
@@ -284,7 +282,6 @@ test_small(void)
 	unsigned i;
 
 	for (i = 0; i < nitems(tests); i += 4) {
-		printf("# Run %d..\n", i);
 		a = tests[i];
 		b = tests[i + 1];
 		x = tests[i + 2];
@@ -299,8 +296,8 @@ test_small(void)
 }
 
 /* Test inputs with a real part r that would overflow exp(r). */
-static void
-test_large(void)
+ATF_TC_WITHOUT_HEAD(large);
+ATF_TC_BODY(large, tc)
 {
 
 	test_tol(cexp, CMPLXL(709.79, 0x1p-1074),
@@ -326,32 +323,15 @@ test_large(void)
 		 CMPLXL(INFINITY, 5.7878851079e+37f), 2 * FLT_ULP());
 }
 
-int
-main(void)
+ATF_TP_ADD_TCS(tp)
 {
+	ATF_TP_ADD_TC(tp, zero);
+	ATF_TP_ADD_TC(tp, nan);
+	ATF_TP_ADD_TC(tp, inf);
+	ATF_TP_ADD_TC(tp, reals);
+	ATF_TP_ADD_TC(tp, imaginaries);
+	ATF_TP_ADD_TC(tp, small);
+	ATF_TP_ADD_TC(tp, large);
 
-	printf("1..7\n");
-
-	test_zero();
-	printf("ok 1 - cexp zero\n");
-
-	test_nan();
-	printf("ok 2 - cexp nan\n");
-
-	test_inf();
-	printf("ok 3 - cexp inf\n");
-
-	test_reals();
-	printf("ok 4 - cexp reals\n");
-
-	test_imaginaries();
-	printf("ok 5 - cexp imaginaries\n");
-
-	test_small();
-	printf("ok 6 - cexp small\n");
-
-	test_large();
-	printf("ok 7 - cexp large\n");
-
-	return (0);
+	return (atf_no_error());
 }
