@@ -1,4 +1,4 @@
-/*	$OpenBSD$	*/
+/* $OpenBSD: lrint_test.c,v 1.1.1.1 2019/02/21 16:14:03 bluhm Exp $ */
 /*-
  * Copyright (c) 2005-2008 David Schultz <das@FreeBSD.org>
  * All rights reserved.
@@ -25,14 +25,12 @@
  * SUCH DAMAGE.
  */
 
-#include "macros.h"
-
 /*
  * Test for lrint(), lrintf(), llrint(), and llrintf().
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD$");
+/* $FreeBSD: head/lib/msun/tests/lrint_test.c 314650 2017-03-04 10:07:46Z ngie $ */
 
 #include <assert.h>
 #include <fenv.h>

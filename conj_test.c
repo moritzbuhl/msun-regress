@@ -1,4 +1,4 @@
-/*	$OpenBSD$	*/
+/* $OpenBSD: conj_test.c,v 1.1.1.1 2019/02/21 16:14:03 bluhm Exp $ */
 /*-
  * Copyright (c) 2008 David Schultz <das@FreeBSD.org>
  * All rights reserved.
@@ -30,6 +30,7 @@
  */
 
 #include <sys/cdefs.h>
+/* $FreeBSD: head/lib/msun/tests/conj_test.c 314650 2017-03-04 10:07:46Z ngie $ */
 
 #include <assert.h>
 #include <complex.h>

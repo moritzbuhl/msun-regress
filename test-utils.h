@@ -1,3 +1,4 @@
+/* $OpenBSD: test-utils.h,v 1.1.1.1 2019/02/21 16:14:03 bluhm Exp $
 /*-
  * Copyright (c) 2005-2013 David Schultz <das@FreeBSD.org>
  * All rights reserved.
@@ -23,7 +24,7 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- * $FreeBSD$
+ * $FreeBSD: head/lib/msun/tests/test-utils.h 314650 2017-03-04 10:07:46Z ngie $
  */
 
 #ifndef	_TEST_UTILS_H_

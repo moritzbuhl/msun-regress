@@ -1,4 +1,4 @@
-/*	$OpenBSD$	*/
+/* $OpenBSD: fenv_test.c,v 1.1.1.1 2019/02/21 16:14:03 bluhm Exp $ */
 /*-
  * Copyright (c) 2004 David Schultz <das@FreeBSD.org>
  * All rights reserved.
@@ -25,14 +25,12 @@
  * SUCH DAMAGE.
  */
 
-#include "macros.h"
-
 /*
  * Test the correctness and C99-compliance of various fenv.h features.
  */
 
 #include <sys/cdefs.h>
-__FBSDID("$FreeBSD$");
+/* $FreeBSD: head/lib/msun/tests/fenv_test.c 314650 2017-03-04 10:07:46Z ngie $ */
 
 #include <sys/types.h>
 #include <sys/wait.h>
