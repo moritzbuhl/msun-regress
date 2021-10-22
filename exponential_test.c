@@ -134,8 +134,9 @@ run_generic_tests(void)
 ATF_TC_WITHOUT_HEAD(exp2f);
 ATF_TC_BODY(exp2f, tc)
 {
+	int i;
 	ATF_REQUIRE_EQ(0, feclearexcept(FE_ALL_EXCEPT));
-	for (int i = FLT_MIN_EXP - FLT_MANT_DIG; i < FLT_MAX_EXP; i++) {
+	for (i = FLT_MIN_EXP - FLT_MANT_DIG; i < FLT_MAX_EXP; i++) {
 		ATF_CHECK_EQ(exp2f(i), ldexpf(1.0, i));
 		CHECK_FP_EXCEPTIONS(0, ALL_STD_EXCEPT);
 	}
@@ -144,8 +145,9 @@ ATF_TC_BODY(exp2f, tc)
 ATF_TC_WITHOUT_HEAD(exp2);
 ATF_TC_BODY(exp2, tc)
 {
+	int i
 	ATF_REQUIRE_EQ(0, feclearexcept(FE_ALL_EXCEPT));
-	for (int i = DBL_MIN_EXP - DBL_MANT_DIG; i < DBL_MAX_EXP; i++) {
+	for (i = DBL_MIN_EXP - DBL_MANT_DIG; i < DBL_MAX_EXP; i++) {
 		ATF_CHECK_EQ(exp2(i), ldexp(1.0, i));
 		CHECK_FP_EXCEPTIONS(0, ALL_STD_EXCEPT);
 	}
@@ -154,8 +156,9 @@ ATF_TC_BODY(exp2, tc)
 ATF_TC_WITHOUT_HEAD(exp2l);
 ATF_TC_BODY(exp2l, tc)
 {
+	int i;
 	ATF_REQUIRE_EQ(0, feclearexcept(FE_ALL_EXCEPT));
-	for (int i = LDBL_MIN_EXP - LDBL_MANT_DIG; i < LDBL_MAX_EXP; i++) {
+	for (i = LDBL_MIN_EXP - LDBL_MANT_DIG; i < LDBL_MAX_EXP; i++) {
 		ATF_CHECK_EQ(exp2l(i), ldexpl(1.0, i));
 		CHECK_FP_EXCEPTIONS(0, ALL_STD_EXCEPT);
 	}

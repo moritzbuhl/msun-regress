@@ -46,32 +46,51 @@ PROGS+= rem_test
 PROGS+= trig_test
 
 # failing tests
-FAILING = run-csqrt_test-{1,2,3} run-ctrig_test-{1,2,3,4,6} \
+FAILING = run-csqrt_test-{1,2,3} run-ctrig_test-{2,3,4,6} \
 	run-exponential_test-1 run-fma_test-7 run-invctrig_test-{1,2,3,4} \
 	run-invtrig_test-{1,2,3,5,6} run-logarithm_test-1 run-lround_test-1 \
 	run-nan_test-1 run-nearbyint_test-1 run-next_test-5 run-rem_test-3
 
 . if ${MACHINE} == amd64
-FAILING+=	run-cexp_test-1
+FAILING+=	run-cexp_test-{1,7}
+FAILING+=	run-ctrig_test-1
 FAILING+=	run-invtrig_test-7
 FAILING+=	run-next_test-{1,2,4}
 FAILING+=	run-trig_test-3
-. elif ${MACHINE} == powerpc64
-FAILING+=	run-ctrig_test-5
+. elif ${MACHINE} == arm64
+FAILING+=	run-cexp_test-{1,7}
+FAILING+=	run-ctrig_test-{1,5}
+FAILING+=	run-fma_test-{1,2,4,5,6,7}
 FAILING+=	run-invtrig_test-7
-FAILING+=	run-invtrig_test-7
-FAILING+=	run-trig_test-2
+FAILING+=	run-logarithm_test-5
+FAILING+=	run-lrint_test-1
+FAILING+=	run-next_test-{1,2,4}
+FAILING+=	run-rem_test-1
+FAILING+=	run-trig_test-{1,2}
 . elif ${MACHINE} == i386
-FAILING+=	run-cexp_test-1
-FAILING+=	run-ctrig_test-5
+FAILING+=	run-cexp_test-{1,7}
+FAILING+=	run-ctrig_test-{1,5}
 FAILING+=	run-fma_test-{1,6}
 FAILING+=	run-invtrig_test-4
 FAILING+=	run-logarithm_test-3
 FAILING+=	run-lrint_test-1
 FAILING+=	run-next_test-{1,2,4}
+. elif ${MACHINE} == powerpc64
+FAILING+=	run-ctrig_test-{1,5}
+FAILING+=	run-invtrig_test-7
+FAILING+=	run-trig_test-2
+. elif ${MACHINE} == sparc64
+FAILING+=	run-ctrig_test-5
+FAILING+=	run-fma_test-{1,2,4,5,6}
+FAILING+=	run-invtrig_test-7
+FAILING+=	run-logarithm_test-5
+FAILING+=	run-lrint_test-1
+FAILING+=	run-next_test-{1,2,4,5}
+FAILING+=	run-rem_test-{1,2}
+FAILING+=	run-trig_test-{1,2}
 . endif
 
-. for t in run-cexp_test-{2,3,4,7}
+. for t in run-cexp_test-{2,3,4}
 ${t}:
 	# cexp functions don't handle inf and nan cases
 	@echo DISABLED
