@@ -43,7 +43,6 @@ __FBSDID("$FreeBSD$");
 #include <stdio.h>
 
 #include "test-utils.h"
-#include "helpers.h"
 
 #pragma STDC FENV_ACCESS	ON
 #pragma	STDC CX_LIMITED_RANGE	OFF
@@ -62,45 +61,15 @@ __FBSDID("$FreeBSD$");
  * XXX The volatile here is to avoid gcc's bogus constant folding and work
  *     around the lack of support for the FENV_ACCESS pragma.
  */
-
-#ifdef VERBOSE
 #define	test_t(type, func, z, result, exceptmask, excepts, checksign)	\
 do {									\
- 	volatile long double complex _d = z;				\
+	volatile long double complex _d = z;				\
 	volatile type complex _r = result;				\
-	printf("Test " #func "(%.32f +i%.32f)\n", creal(_d),		\
-	    cimag(_d));							\
 	ATF_REQUIRE_EQ(0, feclearexcept(FE_ALL_EXCEPT));		\
 	CHECK_CFPEQUAL_CS((func)(_d), (_r), (checksign));		\
 	CHECK_FP_EXCEPTIONS_MSG(excepts, exceptmask, "for %s(%s)",	\
 	    #func, #z);							\
 } while (0)
-
-/* Test within a given tolerance. */
-#define	test_tol(func, z, result, tol)				do {	\
-	volatile long double complex _d = z;				\
-	printf("Test tol " #func "(%.32f +i%.32f)\n", creal(_d),	\
-	    cimag(_d));							\
-	ATF_CHECK(cfpequal_tol((func)(_d), (result), (tol),		\
-	    FPE_ABS_ZERO | CS_BOTH));					\
-} while (0)
-#else /* VERBOSE */
-#define	test_t(type, func, z, result, exceptmask, excepts, checksign)	\
-do {									\
-	volatile type complex _r = result;				\
-	volatile long double complex _d = z;				\
-	ATF_REQUIRE_EQ(0, feclearexcept(FE_ALL_EXCEPT));		\
-	ATF_CHECK(cfpequal_cs((func)(_d), (_r), (checksign)));		\
-	CHECK_FP_EXCEPTIONS_MSG(excepts, exceptmask, "for %s(%s)",	\
-	    #func, #z);							\
-} while (0)
-
-/* Test within a given tolerance. */
-#define	test_tol(func, z, result, tol)	do {			\
-	CHECK_CFPEQUAL_TOL((func)(z), (result), (tol),		\
-	    FPE_ABS_ZERO | CS_BOTH);				\
-} while (0)
-#endif /* VERBOSE */
 
 #define	test(func, z, result, exceptmask, excepts, checksign)		\
 	test_t(double, func, z, result, exceptmask, excepts, checksign)
@@ -111,6 +80,11 @@ do {									\
 #define	test_l(func, z, result, exceptmask, excepts, checksign)		\
 	test_t(long double, func, z, result, exceptmask, excepts,	\
 	    checksign)
+/* Test within a given tolerance. */
+#define	test_tol(func, z, result, tol)	do {			\
+	CHECK_CFPEQUAL_TOL((func)(z), (result), (tol),		\
+	    FPE_ABS_ZERO | CS_BOTH);				\
+} while (0)
 
 /* Test all the functions that compute cexp(x). */
 #define	testall(x, result, exceptmask, excepts, checksign)	do {	\
