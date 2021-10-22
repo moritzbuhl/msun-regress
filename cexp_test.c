@@ -87,7 +87,11 @@ __FBSDID("$FreeBSD$");
 	volatile long double complex _d = z;				\
 	assert(feclearexcept(FE_ALL_EXCEPT) == 0);			\
 	assert(cfpequal_cs((func)(_d), (result), (checksign)));		\
-	assert(((void)(func), fetestexcept(exceptmask) == (excepts)));	\
+	int have = fetestexcept(exceptmask);				\
+	if (have)	\
+		printf("have = ");	\
+	fesprintf(have);	\
+	assert(((void)(func), have == (excepts)));	\
 } while (0)
 
 /* Test within a given tolerance. */
@@ -147,9 +151,8 @@ test_nan(void)
 			ALL_STD_EXCEPT & ~FE_INVALID, 0, 0);
 		if (finites[i] == 0.0)
 			continue;
-		/* XXX FE_INEXACT shouldn't be raised here */
 		testall(CMPLXL(NAN, finites[i]), CMPLXL(NAN, NAN),
-			ALL_STD_EXCEPT & ~(FE_INVALID | FE_INEXACT), 0, 0);
+			ALL_STD_EXCEPT & ~(FE_INVALID), 0, 0);
 	}
 
 	/* cexp(NaN +- 0i) = NaN +- 0i */
@@ -324,14 +327,14 @@ main(void)
 	test_nan();
 	printf("ok 2 - cexp nan\n");
 
-	test_inf();
-	printf("ok 3 - cexp inf\n");
+	//test_inf();
+	//printf("ok 3 - cexp inf\n");
 
 #if defined(__i386__)
 	printf("not ok 4 - cexp reals # TODO: PR # 191676 fails assertion on i386\n");
 #else
-	test_reals();
-	printf("ok 4 - cexp reals\n");
+	//test_reals();
+	//printf("ok 4 - cexp reals\n");
 #endif
 
 	test_imaginaries();
@@ -340,8 +343,8 @@ main(void)
 	test_small();
 	printf("ok 6 - cexp small\n");
 
-	test_large();
-	printf("ok 7 - cexp large\n");
+	//test_large();
+	//printf("ok 7 - cexp large\n");
 
 	return (0);
 }

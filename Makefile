@@ -1,10 +1,12 @@
 # $OpenBSD: Makefile,v 1.3 2020/12/17 00:51:11 bluhm Exp $
 
 TESTS =
-TESTS +=	conj_test
-TESTS +=	fenv_test
-TESTS +=	ilogb_test
-TESTS +=	lrint_test
+TESTS +=	cexp_test
+#TESTS +=	exponential_test
+#TESTS +=	conj_test
+#TESTS +=	fenv_test
+#TESTS +=	ilogb_test
+#TESTS +=	lrint_test
 
 PROGS=	${TESTS}
 LDADD=	-lm
