@@ -1,6 +1,6 @@
-/*	$OpenBSD: atf-c.c,v 1.2 2019/11/22 15:59:53 bluhm Exp $	*/
+/*	$OpenBSD$	*/
 /*
- * Copyright (c) 2019 Moritz Buhl <openbsd@moritzbuhl.de>
+ * Copyright (c) 2019 - 2021 Moritz Buhl <mbuhl@openbsd.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above

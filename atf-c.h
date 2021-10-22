@@ -1,6 +1,6 @@
-/*	$OpenBSD: atf-c.h,v 1.3 2021/09/02 12:40:44 mbuhl Exp $	*/
+/*	$OpenBSD$	*/
 /*
- * Copyright (c) 2019 Moritz Buhl <openbsd@moritzbuhl.de>
+ * Copyright (c) 2019 - 2021 Moritz Buhl <mbuhl@openbsd.org>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-
 
 int atf_test(int, int);
 void atf_require(int, int, const char *, const char *, const int, char *, ...);

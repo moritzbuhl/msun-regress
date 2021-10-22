@@ -1,6 +1,6 @@
 #	$OpenBSD: Makefile,v 1.3 2020/12/17 00:51:11 bluhm Exp $
 
-# Copyright (c) 2021 Moritz Buhl <moritzbuhl@openbsd.org>
+# Copyright (c) 2021 Moritz Buhl <mbuhl@openbsd.org>
 #
 # Permission to use, copy, modify, and distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
