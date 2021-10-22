@@ -173,6 +173,18 @@ cfpequal(long double complex d1, long double complex d2)
 	    fpequal_cs(cimagl(d1), cimagl(d2), true));
 }
 
+#ifdef __OpenBSD__
+static int
+cfpequal_cs(x, y, checksign)
+{
+	long double _x = x;
+	long double _y = y;
+	return
+	    fpequal_cs(creal(_x), creal(_y), (checksign & CS_REAL) != 0) &&
+	    fpequal_cs(cimag(_x), cimag(_y), (checksign & CS_IMAG) != 0);
+}
+#endif
+
 #define CHECK_CFPEQUAL_CS(x, y, checksign) do {					\
 	long double _x = x;							\
 	long double _y = y;							\
