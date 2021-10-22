@@ -167,6 +167,7 @@ ATF_TC_BODY(generic, tc)
 	run_generic_tests();
 }
 
+#ifndef __OpenBSD__
 #ifdef __i386__
 ATF_TC_WITHOUT_HEAD(generic_fp_pe);
 ATF_TC_BODY(generic_fp_pe, tc)
@@ -175,12 +176,15 @@ ATF_TC_BODY(generic_fp_pe, tc)
 	run_generic_tests();
 }
 #endif
+#endif
 
 ATF_TP_ADD_TCS(tp)
 {
 	ATF_TP_ADD_TC(tp, generic);
+#ifndef __OpenBSD__
 #ifdef __i386__
 	ATF_TP_ADD_TC(tp, generic_fp_pe);
+#endif
 #endif
 	ATF_TP_ADD_TC(tp, exp2);
 	ATF_TP_ADD_TC(tp, exp2f);

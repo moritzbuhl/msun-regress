@@ -86,8 +86,10 @@ ATF_TC_BODY(zeros, tc)
 {
 	long double ldbl_small;
 
+#ifndef	__OpenBSD__
 #ifdef	__i386__
 	fpsetprec(FP_PE);
+#endif
 #endif
 	/*
 	 * We can't use a compile-time constant here because gcc on

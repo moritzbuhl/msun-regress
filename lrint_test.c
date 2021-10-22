@@ -131,9 +131,11 @@ ATF_TC_WITHOUT_HEAD(lrint);
 ATF_TC_BODY(lrint, tc)
 {
 	run_tests();
+#ifndef __OpenBSD__
 #ifdef	__i386__
 	fpsetprec(FP_PE);
 	run_tests();
+#endif
 #endif
 }
 
