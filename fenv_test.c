@@ -25,6 +25,8 @@
  * SUCH DAMAGE.
  */
 
+#include "macros.h"
+
 /*
  * Test the correctness and C99-compliance of various fenv.h features.
  */
@@ -38,7 +40,9 @@
 #include <err.h>
 #include <fenv.h>
 #include <float.h>
+#ifndef __OpenBSD__
 #include <libutil.h>
+#endif
 #include <math.h>
 #include <signal.h>
 #include <stdio.h>
