@@ -47,7 +47,7 @@ PROGS+= trig_test
 
 # failing tests
 
-. for t in run-cexp_test-{1,2,3,4,5,7}
+. for t in run-cexp_test-{1,2,3,4,7}
 ${t}:
 	# cexp functions don't handle inf and nan cases
 	@echo DISABLED
