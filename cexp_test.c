@@ -161,9 +161,14 @@ ATF_TC_BODY(nan, tc)
 			ALL_STD_EXCEPT & ~FE_INVALID, 0, 0);
 		if (finites[i] == 0.0)
 			continue;
+#ifndef __OpenBSD__
 		/* XXX FE_INEXACT shouldn't be raised here */
 		testall(CMPLXL(NAN, finites[i]), CMPLXL(NAN, NAN),
 			ALL_STD_EXCEPT & ~(FE_INVALID | FE_INEXACT), 0, 0);
+#else
+		testall(CMPLXL(NAN, finites[i]), CMPLXL(NAN, NAN),
+			ALL_STD_EXCEPT & ~(FE_INVALID), 0, 0);
+#endif
 	}
 
 	/* cexp(NaN +- 0i) = NaN +- 0i */
